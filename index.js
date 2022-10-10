@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.post('/api/users', user_controller.create);
+app.get('/api/users', user_controller.find);
 app.post('/api/users/:_id/exercises', user_controller.addExercise);
 app.get('/api/users/:_id/logs', user_controller.logs);
 

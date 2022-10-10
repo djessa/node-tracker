@@ -1,5 +1,10 @@
 const User = require('../models/user');
 
+const find = async (req, res, next) => {
+    const users = await User.find({}, {log: 0});
+    return res.json(users);
+}
+
 const create = async (req, res, next) => {
      const user = await User.create(req.body);
     return res.json({...req.body, _id: user._id});
@@ -7,11 +12,17 @@ const create = async (req, res, next) => {
 
 const addExercise = async (req, res, next) => {
     const user = await User.findOne({_id: req.params._id});
-    const {description, duration, date} = req.body;
-    const exercise = {description, duration, date: (new Date(date)).toDateString()};
+    const {description, duration} = req.body;
+    let date = req.body.date;
+    if(date == undefined) {
+        date = new Date();
+    } else {
+        date =  new Date(date);
+    }
+    const exercise = {description, duration: parseInt(duration), date: date.toDateString()};
     user.log.push(exercise);
     await User.update({_id: user._id}, {log: user.log});
-    return res.json({username: user.username, _id: user._id, ...exercise});
+    return res.json(user);
 }
 
 const logs = async (req, res, next) => {
@@ -19,4 +30,4 @@ const logs = async (req, res, next) => {
     return res.json({count: user.log.length, ...user._doc});
 }
 
-module.exports = {create, addExercise, logs}
+module.exports = {create, find, addExercise, logs}
