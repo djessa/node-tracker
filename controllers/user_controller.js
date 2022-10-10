@@ -22,7 +22,7 @@ const addExercise = async (req, res, next) => {
     const exercise = {description, duration: parseInt(duration), date: date.toDateString()};
     user.log.push(exercise);
     await User.update({_id: user._id}, {log: user.log});
-    return res.json(user);
+    return res.json({_id: user._id, username: user.username, ...exercise});
 }
 
 const logs = async (req, res, next) => {
