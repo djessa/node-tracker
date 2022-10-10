@@ -16,7 +16,7 @@ const addExercise = async (req, res, next) => {
 
 const logs = async (req, res, next) => {
     const user = await User.findOne({_id: req.params._id});
-    return res.json(user);
+    return res.json({count: user.log.length, ...user._doc});
 }
 
 module.exports = {create, addExercise, logs}
