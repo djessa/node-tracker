@@ -12,6 +12,9 @@ const create = async (req, res, next) => {
 
 const addExercise = async (req, res, next) => {
     const user = await User.findOne({_id: req.params._id});
+    if(user == null) {
+        return res.status(404).json({message: 'user not found'});
+    }
     const {description, duration} = req.body;
     let date = req.body.date;
     if(date == undefined) {
