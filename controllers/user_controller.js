@@ -30,6 +30,25 @@ const addExercise = async (req, res, next) => {
 
 const logs = async (req, res, next) => {
     const user = await User.findOne({_id: req.params._id});
+    let count = 0;
+    const logs = user.log.filter(log => {
+        count++;
+        let isValid = false;
+        if(req.query.limit != undefined) {
+            if(parseInt(req.query.limit) >= count) isValid = true;
+        } else {
+            isValid = true;
+        }
+        if(req.query.from != undefined && req.query.to != undefined) {
+            const from = new Date(req.query.from);
+            const to = new Date(req.query.to);
+            const current = new Date(log.date);
+            if(current.getTime() >= from.getTime() && current.getTime() <= to.getTime())  isValid = true;
+            else isValid = false;
+        }
+        if(isValid) return log;
+    })
+    user.log = logs;
     return res.json({count: user.log.length, ...user._doc});
 }
 
